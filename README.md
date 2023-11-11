@@ -2,6 +2,10 @@
 
 This project creates colored OBJ from CT scan in DICOM (.dcm) format. It was created just out of interest, all fame to the authors of TotalSegmentator paper.
 
+![Screenshot of the result in Blender](https://github.com/lvonasek/Dicom2ColoredOBJ/blob/main/screenshot.png?raw=true)
+
+Tested on Ubuntu 24.04.
+
 ### Installation
 
 ```
