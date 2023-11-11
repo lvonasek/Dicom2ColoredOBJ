@@ -15,7 +15,7 @@ pip install TotalSegmentator vtk
 ### Generate 3D model
 
 ```
-# convert demo data dicom data (replace demo_data with your own path to process it)
+# convert demo dicom data (replace demo_data with your own path to process it)
 TotalSegmentator -i demo_data -o segmentations --preview
 
 # convert segmentations into colored 3D model `output.obj`
