@@ -36,8 +36,11 @@ def nii_2_mesh(filename_nii, filename_obj, label):
 
 if __name__ == '__main__':
 
+    # define color mapping in HSV (note that saturation value is ignored)
+    colors = {}
+    colors["liver.nii.gz"] = [0.28, 0.57, 0.92]
+
     # prepare variables
-    color = 0
     offset = 0
     temp = "temp.obj"
 
@@ -55,6 +58,9 @@ if __name__ == '__main__':
 
         # append the mesh of the single object into the output
         if os.path.isfile(temp):
+            color = [0, 0, 0]
+            if os.path.basename(file) in colors.keys():
+                color = colors[os.path.basename(file)]
             output.write("o " + os.path.basename(file) + "\n")
             with open(temp) as f:
                 for line in re.split("\n", f.read()):
@@ -63,7 +69,7 @@ if __name__ == '__main__':
                     # write vertex coordinates
                     if data[0] == 'v':
                         output.write(line + "\n")
-                        output.write("vt " + str(color) + " 0\n")
+                        output.write("vt " + str(color[0] / 3.6) + " " + str(color[2]) + "\n")
                         count += 1
 
                     # write triangle indices
@@ -75,5 +81,4 @@ if __name__ == '__main__':
 
             # update indices offset, object color and remove temp file
             offset += count
-            color += 1.0 / 64.0 #Color range is 0..1 but it is better to have contrast colors than unique colors
             os.remove(temp)
