@@ -9,7 +9,7 @@ Tested on Ubuntu 24.04. TotalSegmentator supports processing just one scan at th
 ### Installation
 
 ```
-pip install TotalSegmentator vtk
+pip install nii2png TotalSegmentator vtk
 ```
 
 ### Generate 3D model
@@ -27,3 +27,5 @@ python3 meshall.py
 https://github.com/wasserth/TotalSegmentator
 
 https://github.com/MahsaShk/MeshProcessing
+
+https://github.com/alexlaurence/NIfTI-Image-Converter

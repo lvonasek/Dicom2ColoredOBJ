@@ -1,6 +1,9 @@
 import glob
+import gzip
+import nii2png
 import re
 import os
+import shutil
 import vtk
 
 
@@ -168,6 +171,14 @@ if __name__ == '__main__':
     # run the loop
     for file in glob.glob("segmentations/*.gz"):
 
+        # unpack data
+        name = os.path.basename(file)
+        unpacked = "segmentations/temp.nii"
+        with gzip.open(file, 'rb') as f_in:
+            with open(unpacked, 'wb') as f_out:
+                shutil.copyfileobj(f_in, f_out)
+        nii2png.main(["-i", unpacked, "-o", "segmentations/"])
+
         # generate mesh for a single object
         count = 0
         nii_2_mesh(file, temp, 1)
@@ -175,9 +186,9 @@ if __name__ == '__main__':
         # append the mesh of the single object into the output
         if os.path.isfile(temp):
             color = [1.8, 1.0, 1.0]
-            if os.path.basename(file) in colors.keys():
-                color = colors[os.path.basename(file)]
-            output.write("o " + os.path.basename(file) + "\n")
+            if name in colors.keys():
+                color = colors[name]
+            output.write("o " + name + "\n")
             with open(temp) as f:
                 for line in re.split("\n", f.read()):
                     data = re.split("\s+", line)
@@ -195,6 +206,6 @@ if __name__ == '__main__':
                         c = str(int(data[3]) + offset)
                         output.write("f " + a + "/" + a + " " + b + "/" + b + " " + c + "/" + c + "\n")
 
-            # update indices offset, object color and remove temp file
+            # update indices offset and remove temp file
             offset += count
             os.remove(temp)
