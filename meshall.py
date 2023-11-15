@@ -50,6 +50,7 @@ def nii2png(inputfile, outputfile):
     image_array = nibabel.load(inputfile).get_fdata()
 
     # if 3D image inputted
+    orientation = -1
     if len(image_array.shape) == 3:
         # set 4d array dimension values
         nx, ny, nz = image_array.shape
@@ -58,12 +59,16 @@ def nii2png(inputfile, outputfile):
         if not os.path.exists(outputfile):
             os.makedirs(outputfile)
 
+        # TODO: support non-square resolutions
         if image_array.shape[1] == image_array.shape[2]:
             total_slices = image_array.shape[0]
+            orientation = 0
         elif image_array.shape[0] == image_array.shape[2]:
             total_slices = image_array.shape[1]
+            orientation = 1
         elif image_array.shape[0] == image_array.shape[1]:
             total_slices = image_array.shape[2]
+            orientation = 2
         else:
             print('Unsupported resolution')
 
@@ -82,6 +87,7 @@ def nii2png(inputfile, outputfile):
             imageio.imwrite(image_name, Image.fromarray(data).convert("L"))
     else:
         print('Not a 3D Image. Please try again.')
+    return orientation
     
 
 if __name__ == '__main__':
@@ -279,7 +285,7 @@ if __name__ == '__main__':
                 with gzip.open(file, 'rb') as f_in:
                     with open(unpacked, 'wb') as f_out:
                         shutil.copyfileobj(f_in, f_out)
-                nii2png(unpacked, "segmentations/")
+                orientation = nii2png(unpacked, "segmentations/")
 
                 # colorize images
                 index = len(images) - 1
@@ -290,7 +296,11 @@ if __name__ == '__main__':
                     frame = numpy.reshape(frame, (shape[0], shape[1]))
                     multiplier = numpy.uint8(numpy.array(rgb) * 255)
                     for y in range(shape[1]):
-                        row = frame[y, shape[0] - numpy.arange(shape[0]) - 1]
+                        # TODO: this doesn't seem to be universally correct, test it on more data
+                        if orientation == 0:
+                            row = frame[shape[1] - y - 1, shape[0] - numpy.arange(shape[0]) - 1]
+                        else:
+                            row = frame[y, shape[0] - numpy.arange(shape[0]) - 1]
                         images[index][:, y * 3 + 0] = numpy.add(images[index][:, y * 3 + 0], row * multiplier[0])
                         images[index][:, y * 3 + 1] = numpy.add(images[index][:, y * 3 + 1], row * multiplier[1])
                         images[index][:, y * 3 + 2] = numpy.add(images[index][:, y * 3 + 2], row * multiplier[2])
