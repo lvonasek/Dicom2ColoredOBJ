@@ -37,7 +37,6 @@ def main(argv):
 
     # set fn as your 4d nifti file
     image_array = nibabel.load(inputfile).get_fdata()
-    print(len(image_array.shape))
 
     # if 4D image inputted
     if len(image_array.shape) == 4:
@@ -47,9 +46,6 @@ def main(argv):
         # set destination folder
         if not os.path.exists(outputfile):
             os.makedirs(outputfile)
-            print("Created ouput directory: " + outputfile)
-
-        print('Reading NIfTI file...')
 
         total_volumes = image_array.shape[3]
         total_slices = image_array.shape[2]
@@ -61,12 +57,8 @@ def main(argv):
                 data = image_array[:, :, current_slice, current_volume]
                         
                 #alternate slices and save as png
-                print('Saving image...')
                 image_name = inputfile[:-4] + "_t" + "{:0>3}".format(str(current_volume+1)) + "_z" + "{:0>3}".format(str(current_slice+1))+ ".png"
                 imageio.imwrite(image_name, Image.fromarray(data))
-                print('Saved.')
-
-        print('Finished converting images')
 
     # else if 3D image inputted
     elif len(image_array.shape) == 3:
@@ -76,9 +68,6 @@ def main(argv):
         # set destination folder
         if not os.path.exists(outputfile):
             os.makedirs(outputfile)
-            print("Created ouput directory: " + outputfile)
-
-        print('Reading NIfTI file...')
 
         total_slices = image_array.shape[0]
 
@@ -90,8 +79,6 @@ def main(argv):
             #alternate slices and save as png
             image_name = inputfile[:-4] + "_z" + "{:0>3}".format(str(current_slice+1))+ ".png"
             imageio.imwrite(image_name, Image.fromarray(data).convert("L"))
-
-        print('Finished converting images')
     else:
         print('Not a 3D or 4D Image. Please try again.')
 

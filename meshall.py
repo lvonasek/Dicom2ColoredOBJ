@@ -192,7 +192,7 @@ if __name__ == '__main__':
     # run the loop
     for file in glob.glob("segmentations/*.gz"):
 
-        # unpack data
+        # unpack image data
         name = os.path.basename(file)
         unpacked = "segmentations/temp.nii"
         with gzip.open(file, 'rb') as f_in:
