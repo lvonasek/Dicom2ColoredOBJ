@@ -19,6 +19,9 @@ pip install nii2png png TotalSegmentator vtk
 TotalSegmentator -i demo_data -o segmentations --preview
 
 # convert segmentations into colored 3D model `output.obj`
+python3 meshall.py
+
+# convert segmentations and generate colored images into demo data directory
 python3 meshall.py demo_data
 ```
 

@@ -232,32 +232,34 @@ if __name__ == '__main__':
             offset += count
             os.remove(temp)
 
-            # unpack image data
-            unpacked = "segmentations/temp.nii"
-            with gzip.open(file, 'rb') as f_in:
-                with open(unpacked, 'wb') as f_out:
-                    shutil.copyfileobj(f_in, f_out)
-            nii2png.main(["-i", unpacked, "-o", "segmentations/"])
+            if len(sys.argv) > 1:
+                # unpack image data
+                unpacked = "segmentations/temp.nii"
+                with gzip.open(file, 'rb') as f_in:
+                    with open(unpacked, 'wb') as f_out:
+                        shutil.copyfileobj(f_in, f_out)
+                nii2png.main(["-i", unpacked, "-o", "segmentations/"])
 
-            # colorize images
-            imcount = 0
-            for image in numpy.sort(glob.glob("segmentations/*.png")):
-                if os.path.basename(image)[:4] != "temp":
-                    continue
-                frame = numpy.array(Image.open(image).getdata())
-                frame = numpy.reshape(frame, (shape[0], shape[1]))
-                multiplier = numpy.uint8(numpy.array(rgb) * 255)
-                for y in range(shape[1]):
-                    row = frame[shape[1] - y - 1, shape[0] - numpy.arange(shape[0]) - 1]
-                    images[imcount][:, y * 3 + 0] = numpy.add(images[imcount][:, y * 3 + 0], row * multiplier[0])
-                    images[imcount][:, y * 3 + 1] = numpy.add(images[imcount][:, y * 3 + 1], row * multiplier[1])
-                    images[imcount][:, y * 3 + 2] = numpy.add(images[imcount][:, y * 3 + 2], row * multiplier[2])
-                imcount += 1
+                # colorize images
+                imcount = 0
+                for image in numpy.sort(glob.glob("segmentations/*.png")):
+                    if os.path.basename(image)[:4] != "temp":
+                        continue
+                    frame = numpy.array(Image.open(image).getdata())
+                    frame = numpy.reshape(frame, (shape[0], shape[1]))
+                    multiplier = numpy.uint8(numpy.array(rgb) * 255)
+                    for y in range(shape[1]):
+                        row = frame[shape[1] - y - 1, shape[0] - numpy.arange(shape[0]) - 1]
+                        images[imcount][:, y * 3 + 0] = numpy.add(images[imcount][:, y * 3 + 0], row * multiplier[0])
+                        images[imcount][:, y * 3 + 1] = numpy.add(images[imcount][:, y * 3 + 1], row * multiplier[1])
+                        images[imcount][:, y * 3 + 2] = numpy.add(images[imcount][:, y * 3 + 2], row * multiplier[2])
+                    imcount += 1
 
     # save images
-    count = 0
-    for image in images:
-        with open(sys.argv[1] + "/" + str(count) + ".png", 'wb') as png_file:
-            w = png.Writer(shape[1], shape[0], greyscale=False)
-            w.write(png_file, numpy.minimum(image, 255))
-            count += 1
+    if len(sys.argv) > 1:
+        count = 0
+        for image in images:
+            with open(sys.argv[1] + "/" + str(count) + ".png", 'wb') as png_file:
+                w = png.Writer(shape[1], shape[0], greyscale=False)
+                w.write(png_file, numpy.minimum(image, 255))
+                count += 1
