@@ -282,7 +282,7 @@ if __name__ == '__main__':
                 nii2png(unpacked, "segmentations/")
 
                 # colorize images
-                imcount = 0
+                index = len(images) - 1
                 for image in numpy.sort(glob.glob("segmentations/*.png")):
                     if os.path.basename(image)[:4] != "temp":
                         continue
@@ -290,11 +290,11 @@ if __name__ == '__main__':
                     frame = numpy.reshape(frame, (shape[0], shape[1]))
                     multiplier = numpy.uint8(numpy.array(rgb) * 255)
                     for y in range(shape[1]):
-                        row = frame[shape[1] - y - 1, shape[0] - numpy.arange(shape[0]) - 1]
-                        images[imcount][:, y * 3 + 0] = numpy.add(images[imcount][:, y * 3 + 0], row * multiplier[0])
-                        images[imcount][:, y * 3 + 1] = numpy.add(images[imcount][:, y * 3 + 1], row * multiplier[1])
-                        images[imcount][:, y * 3 + 2] = numpy.add(images[imcount][:, y * 3 + 2], row * multiplier[2])
-                    imcount += 1
+                        row = frame[y, shape[0] - numpy.arange(shape[0]) - 1]
+                        images[index][:, y * 3 + 0] = numpy.add(images[index][:, y * 3 + 0], row * multiplier[0])
+                        images[index][:, y * 3 + 1] = numpy.add(images[index][:, y * 3 + 1], row * multiplier[1])
+                        images[index][:, y * 3 + 2] = numpy.add(images[index][:, y * 3 + 2], row * multiplier[2])
+                    index -= 1
 
     # save images
     if len(sys.argv) > 1:
