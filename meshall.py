@@ -1,8 +1,9 @@
 import colorsys
 import glob
 import gzip
+import imageio
+import nibabel
 import numpy
-import nii2png
 import png
 import pydicom
 import re
@@ -41,6 +42,46 @@ def nii_2_mesh(filename_nii, filename_obj, label):
     writer.SetInputConnection(smoother.GetOutputPort())
     writer.SetFileName(filename_obj)
     writer.Write()
+
+
+def nii2png(inputfile, outputfile):
+
+    # set fn as your 4d nifti file
+    image_array = nibabel.load(inputfile).get_fdata()
+
+    # if 3D image inputted
+    if len(image_array.shape) == 3:
+        # set 4d array dimension values
+        nx, ny, nz = image_array.shape
+
+        # set destination folder
+        if not os.path.exists(outputfile):
+            os.makedirs(outputfile)
+
+        if image_array.shape[1] == image_array.shape[2]:
+            total_slices = image_array.shape[0]
+        elif image_array.shape[0] == image_array.shape[2]:
+            total_slices = image_array.shape[1]
+        elif image_array.shape[0] == image_array.shape[1]:
+            total_slices = image_array.shape[2]
+        else:
+            print('Unsupported resolution')
+
+        # iterate through slices)
+        for current_slice in range(0, total_slices):
+            # alternate slices
+            if image_array.shape[1] == image_array.shape[2]:
+                data = image_array[current_slice, :, :]
+            elif image_array.shape[0] == image_array.shape[2]:
+                data = image_array[:, current_slice, :]
+            elif image_array.shape[0] == image_array.shape[1]:
+                data = image_array[:, :, current_slice]
+
+            #alternate slices and save as png
+            image_name = inputfile[:-4] + "_z" + "{:0>3}".format(str(current_slice+1))+ ".png"
+            imageio.imwrite(image_name, Image.fromarray(data).convert("L"))
+    else:
+        print('Not a 3D Image. Please try again.')
     
 
 if __name__ == '__main__':
@@ -238,7 +279,7 @@ if __name__ == '__main__':
                 with gzip.open(file, 'rb') as f_in:
                     with open(unpacked, 'wb') as f_out:
                         shutil.copyfileobj(f_in, f_out)
-                nii2png.main(["-i", unpacked, "-o", "segmentations/"])
+                nii2png(unpacked, "segmentations/")
 
                 # colorize images
                 imcount = 0
