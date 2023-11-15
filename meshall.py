@@ -1,9 +1,13 @@
 import glob
 import gzip
+import numpy
 import nii2png
+import png
+import pydicom
 import re
 import os
 import shutil
+import sys
 import vtk
 
 
@@ -38,6 +42,23 @@ def nii_2_mesh(filename_nii, filename_obj, label):
     
 
 if __name__ == '__main__':
+
+    # decode dicom images
+    images = []
+    if len(sys.argv) > 1:
+        for file in numpy.sort(glob.glob(sys.argv[1] + "/*")):
+            if file[-3:] == "png":
+                continue
+            ds = pydicom.dcmread(file)
+            shape = ds.pixel_array.shape
+            image_2d = ds.pixel_array.astype(float)
+            image_2d_scaled = numpy.uint8((numpy.maximum(image_2d,0) / image_2d.max()) * 255.0)
+            image_2d_colored = numpy.zeros([shape[0], shape[1] * 3], dtype=numpy.uint8)
+            for y in range(shape[1]):
+                image_2d_colored[:, y * 3] = image_2d_scaled[:, y]
+                image_2d_colored[:, y * 3 + 1] = image_2d_scaled[:, y]
+                image_2d_colored[:, y * 3 + 2] = image_2d_scaled[:, y]
+            images.append(image_2d_colored)
 
     # define color mapping in HSV (note that saturation value is ignored)
     colors = {}
@@ -209,3 +230,11 @@ if __name__ == '__main__':
             # update indices offset and remove temp file
             offset += count
             os.remove(temp)
+
+    # save images
+    count = 0
+    for image in images:
+        with open(sys.argv[1] + "/" + str(count) + ".png", 'wb') as png_file:
+            w = png.Writer(shape[1], shape[0], greyscale=False)
+            w.write(png_file, image)
+            count += 1

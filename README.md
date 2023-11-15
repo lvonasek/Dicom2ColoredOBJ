@@ -9,23 +9,25 @@ Tested on Ubuntu 24.04. TotalSegmentator supports processing just one scan at th
 ### Installation
 
 ```
-pip install nii2png TotalSegmentator vtk
+pip install nii2png png TotalSegmentator vtk
 ```
 
 ### Generate 3D model
 
 ```
 # convert demo dicom data (replace demo_data with your own path to process it)
-TotalSegmentator -i demo_data -o segmentations --preview
+TotalSegmentator -i demo_data/ -o segmentations --preview
 
 # convert segmentations into colored 3D model `output.obj`
-python3 meshall.py
+python3 meshall.py demo_data/
 ```
 
-### Used projects
+### Used code
 
 https://github.com/wasserth/TotalSegmentator
 
 https://github.com/MahsaShk/MeshProcessing
 
 https://github.com/alexlaurence/NIfTI-Image-Converter
+
+https://github.com/hphuongdhsp/dicom2png
