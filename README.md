@@ -16,10 +16,10 @@ pip install nii2png png TotalSegmentator vtk
 
 ```
 # convert demo dicom data (replace demo_data with your own path to process it)
-TotalSegmentator -i demo_data/ -o segmentations --preview
+TotalSegmentator -i demo_data -o segmentations --preview
 
 # convert segmentations into colored 3D model `output.obj`
-python3 meshall.py demo_data/
+python3 meshall.py demo_data
 ```
 
 ### Used code

@@ -1,3 +1,4 @@
+import colorsys
 import glob
 import gzip
 import numpy
@@ -10,11 +11,12 @@ import shutil
 import sys
 import vtk
 
+from PIL import Image
+
 
 def nii_2_mesh(filename_nii, filename_obj, label):
 
     # read the file
-    print(filename_nii)
     reader = vtk.vtkNIFTIImageReader()
     reader.SetFileName(filename_nii)
     reader.Update()
@@ -55,7 +57,7 @@ if __name__ == '__main__':
             image_2d_scaled = numpy.uint8((numpy.maximum(image_2d,0) / image_2d.max()) * 255.0)
             image_2d_colored = numpy.zeros([shape[0], shape[1] * 3], dtype=numpy.uint8)
             for y in range(shape[1]):
-                image_2d_colored[:, y * 3] = image_2d_scaled[:, y]
+                image_2d_colored[:, y * 3 + 0] = image_2d_scaled[:, y]
                 image_2d_colored[:, y * 3 + 1] = image_2d_scaled[:, y]
                 image_2d_colored[:, y * 3 + 2] = image_2d_scaled[:, y]
             images.append(image_2d_colored)
@@ -181,7 +183,10 @@ if __name__ == '__main__':
     colors["costal_cartilages.nii.gz"] = [0.74, 0.35, 0.97]
 
     # prepare variables
+    current = 0
     offset = 0
+    list = glob.glob("segmentations/*.gz")
+    size = len(list)
     temp = "temp.obj"
 
     # write header of the output file
@@ -190,25 +195,21 @@ if __name__ == '__main__':
     output.write("usemtl default\n")
 
     # run the loop
-    for file in glob.glob("segmentations/*.gz"):
-
-        # unpack image data
-        name = os.path.basename(file)
-        unpacked = "segmentations/temp.nii"
-        with gzip.open(file, 'rb') as f_in:
-            with open(unpacked, 'wb') as f_out:
-                shutil.copyfileobj(f_in, f_out)
-        nii2png.main(["-i", unpacked, "-o", "segmentations/"])
+    for file in list:
 
         # generate mesh for a single object
         count = 0
+        current += 1
+        print(str(current) + "/" + str(size) + " " + file)
         nii_2_mesh(file, temp, 1)
 
         # append the mesh of the single object into the output
+        name = os.path.basename(file)
         if os.path.isfile(temp):
             color = [1.8, 1.0, 1.0]
             if name in colors.keys():
                 color = colors[name]
+            rgb = colorsys.hsv_to_rgb(color[0] / 3.6, 1.0, color[2])
             output.write("o " + name + "\n")
             with open(temp) as f:
                 for line in re.split("\n", f.read()):
@@ -231,10 +232,32 @@ if __name__ == '__main__':
             offset += count
             os.remove(temp)
 
+            # unpack image data
+            unpacked = "segmentations/temp.nii"
+            with gzip.open(file, 'rb') as f_in:
+                with open(unpacked, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+            nii2png.main(["-i", unpacked, "-o", "segmentations/"])
+
+            # colorize images
+            imcount = 0
+            for image in numpy.sort(glob.glob("segmentations/*.png")):
+                if os.path.basename(image)[:4] != "temp":
+                    continue
+                frame = numpy.array(Image.open(image).getdata())
+                frame = numpy.reshape(frame, (shape[0], shape[1]))
+                multiplier = numpy.uint8(numpy.array(rgb) * 255)
+                for y in range(shape[1]):
+                    row = frame[shape[1] - y - 1, shape[0] - numpy.arange(shape[0]) - 1]
+                    images[imcount][:, y * 3 + 0] = numpy.add(images[imcount][:, y * 3 + 0], row * multiplier[0])
+                    images[imcount][:, y * 3 + 1] = numpy.add(images[imcount][:, y * 3 + 1], row * multiplier[1])
+                    images[imcount][:, y * 3 + 2] = numpy.add(images[imcount][:, y * 3 + 2], row * multiplier[2])
+                imcount += 1
+
     # save images
     count = 0
     for image in images:
         with open(sys.argv[1] + "/" + str(count) + ".png", 'wb') as png_file:
             w = png.Writer(shape[1], shape[0], greyscale=False)
-            w.write(png_file, image)
+            w.write(png_file, numpy.minimum(image, 255))
             count += 1
