@@ -25,6 +25,8 @@ python3 meshall.py
 python3 meshall.py demo_data
 ```
 
+If you change the dataset then delete the `segmentations` folder before calling `TotalSegmentator` again.
+
 ### Used code
 
 https://github.com/wasserth/TotalSegmentator
