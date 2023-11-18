@@ -1,4 +1,3 @@
-import colorsys
 import glob
 import gzip
 import imageio
@@ -109,125 +108,178 @@ if __name__ == '__main__':
                 image_2d_colored[:, y * 3 + 2] = image_2d_scaled[:, y]
             images.append(image_2d_colored)
 
-    # define color mapping in HSV (note that saturation value is ignored)
-    colors = {}
-    colors["spleen.nii.gz"] = [2.13, 0.64, 0.86]
-    colors["kidney_right.nii.gz"] = [1.09, 0.79, 0.18]
-    colors["kidney_left.nii.gz"] = [1.09, 0.79, 0.18]
-    colors["gallbladder.nii.gz"] = [0.65, 0.48, 0.71]
-    colors["liver.nii.gz"] = [0.28, 0.57, 0.92]
-    colors["stomach.nii.gz"] = [3.60, 0.65, 0.77]
-    colors["pancreas.nii.gz"] = [1.39, 0.76, 0.88]
-    colors["adrenal_gland_right.nii.gz"] = [1.55, 0.70, 0.57]
-    colors["adrenal_gland_left.nii.gz"] = [1.55, 0.70, 0.57]
-    colors["lung_upper_lobe_left.nii.gz"] = [2.79, 0.98, 0.76]
-    colors["lung_lower_lobe_left.nii.gz"] = [0.52, 0.63, 0.93]
-    colors["lung_upper_lobe_right.nii.gz"] = [2.79, 0.98, 0.76]
-    colors["lung_middle_lobe_right.nii.gz"] = [3.60, 0.65, 0.77]
-    colors["lung_lower_lobe_right.nii.gz"] = [0.52, 0.63, 0.93]
-    colors["esophagus.nii.gz"] = [1.55, 0.70, 0.61]
-    colors["trachea.nii.gz"] = [0.88, 0.88, 0.55]
-    colors["thyroid_gland.nii.gz"] = [2.98, 0.93, 0.45]
-    colors["small_bowel.nii.gz"] = [2.79, 0.98, 0.64]
-    colors["duodenum.nii.gz"] = [0.52, 0.63, 0.93]
-    colors["colon.nii.gz"] = [0.66, 0.49, 0.70]
-    colors["urinary_bladder.nii.gz"] = [0.88, 0.88, 0.55]
-    colors["prostate.nii.gz"] = [1.60, 0.53, 0.56]
-    colors["kidney_cyst_left.nii.gz"] = [3.0, 1.0, 1.0]
-    colors["kidney_cyst_right.nii.gz"] = [3.0, 1.0, 1.0]
-    colors["sacrum.nii.gz"] = [3.51, 0.82, 0.98]
-    colors["vertebrae_S1.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_L5.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_L4.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_L3.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_L2.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_L1.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T12.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T11.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T10.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T9.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T8.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T7.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T6.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T5.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T4.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T3.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T2.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_T1.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_C7.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_C6.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_C5.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_C4.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_C3.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_C2.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["vertebrae_C1.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["heart.nii.gz"] = [3.60, 1.0, 1.0]
-    colors["aorta.nii.gz"] = [2.79, 0.98, 0.76]
-    colors["pulmonary_vein.nii.gz"] = [0.88, 0.87, 0.49]
-    colors["brachiocephalic_trunk.nii.gz"] = [3.43, 0.79, 0.45]
-    colors["subclavian_artery_right.nii.gz"] = [1.70, 0.20, 0.97]
-    colors["subclavian_artery_left.nii.gz"] = [1.70, 0.20, 0.97]
-    colors["common_carotid_artery_right.nii.gz"] = [2.97, 0.88, 0.39]
-    colors["common_carotid_artery_left.nii.gz"] = [2.97, 0.88, 0.39]
-    colors["brachiocephalic_vein_left.nii.gz"] = [3.43, 0.79, 0.45]
-    colors["brachiocephalic_vein_right.nii.gz"] = [3.43, 0.79, 0.45]
-    colors["atrial_appendage_left.nii.gz"] = [1.09, 0.79, 0.18]
-    colors["superior_vena_cava.nii.gz"] = [2.79, 0.98, 0.76]
-    colors["inferior_vena_cava.nii.gz"] = [0.87, 0.88, 0.60]
-    colors["portal_vein_and_splenic_vein.nii.gz"] = [0.29, 0.57, 0.92]
-    colors["iliac_artery_left.nii.gz"] = [3.60, 0.65, 0.73]
-    colors["iliac_artery_right.nii.gz"] = [3.60, 0.65, 0.73]
-    colors["iliac_vena_left.nii.gz"] = [0.66, 0.49, 0.70]
-    colors["iliac_vena_right.nii.gz"] = [0.66, 0.49, 0.70]
-    colors["humerus_left.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["humerus_right.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["scapula_left.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["scapula_right.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["clavicula_left.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["clavicula_right.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["femur_left.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["femur_right.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["hip_left.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["hip_right.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["spinal_cord.nii.gz"] = [2.40, 0.84, 0.70]
-    colors["gluteus_maximus_left.nii.gz"] = [1.40, 0.76, 0.90]
-    colors["gluteus_maximus_right.nii.gz"] = [1.40, 0.76, 0.90]
-    colors["gluteus_medius_left.nii.gz"] = [0.87, 0.88, 0.60]
-    colors["gluteus_medius_right.nii.gz"] = [0.87, 0.88, 0.60]
-    colors["gluteus_minimus_left.nii.gz"] = [2.13, 0.63, 0.82]
-    colors["gluteus_minimus_right.nii.gz"] = [2.13, 0.63, 0.82]
-    colors["autochthon_left.nii.gz"] = [3.60, 0.65, 0.77]
-    colors["autochthon_right.nii.gz"] = [3.60, 0.65, 0.77]
-    colors["iliopsoas_left.nii.gz"] = [0.64, 0.48, 0.68]
-    colors["iliopsoas_right.nii.gz"] = [0.64, 0.48, 0.68]
-    colors["brain.nii.gz"] = [1.70, 0.20, 0.94]
-    colors["skull.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_4.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_3.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_1.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_2.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_3.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_4.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_5.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_6.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_7.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_8.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_9.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_10.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_11.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_left_12.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_1.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_2.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_5.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_6.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_7.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_8.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_9.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_10.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_11.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["rib_right_12.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["sternum.nii.gz"] = [0.74, 0.35, 0.97]
-    colors["costal_cartilages.nii.gz"] = [0.74, 0.35, 0.97]
+    # palette from 3DSlicer/SlicerTotalSegmentator
+    colors = [
+        [255, 0, 255],  #0
+        [157, 108, 162],#1
+        [185, 102, 83], #2
+        [135, 150, 98], #3
+        [221, 130, 101],#4
+        [216, 132, 105],#5
+        [249, 180, 111],#6
+        [249, 186, 150],#7
+        [172, 138, 150],#8
+        [224, 186, 162],#9
+        [202, 164, 140],#10
+        [211, 171, 143],#11
+        [182, 228, 255],#12
+        [62, 162, 114], #13
+        [205, 167, 142],#14
+        [255, 253, 229],#15
+        [204, 168, 143],#16
+        [222, 154, 132],#17
+        [230, 158, 140],#18
+        [205, 205, 100],#19
+        [212, 188, 102],#20
+        [212, 208, 122],#21
+        [226, 202, 134],#22
+        [255, 255, 207],#23
+        [206, 110, 84], #24
+        [224, 97, 76],  #25
+        [186, 77, 64],  #26
+        [196, 121, 79], #27
+        [216, 101, 89], #28
+        [216, 101, 69], #29
+        [0, 112, 165],  #30
+        [10, 105, 155], #31
+        [0, 151, 206],  #32
+        [0, 161, 196],  #33
+        [0, 141, 226],  #34
+        [216, 101, 79], #35
+        [205, 179, 108],#36
+        [255, 238, 170],#37
+        [244, 214, 49], #38
+        [188, 95, 76],  #39
+        [178, 105, 76], #40
+        [178, 95, 86],  #41
+        [171, 85, 68],  #42
+        [188, 95, 76],  #43
+        [250, 250, 225],#44
+        [241, 213, 144],#45
+        [253, 232, 158],#46
+        [244, 217, 154],#47
+        [111, 184, 210],#48
+        ]
+
+    # mapping from 3DSlicer/SlicerTotalSegmentator
+    mapping = {}
+    mapping["spleen.nii.gz"] = 1
+    mapping["kidney_right.nii.gz"] = 2
+    mapping["kidney_left.nii.gz"] = 2
+    mapping["gallbladder.nii.gz"] = 3
+    mapping["liver.nii.gz"] = 4
+    mapping["stomach.nii.gz"] = 5
+    mapping["pancreas.nii.gz"] = 6
+    mapping["adrenal_gland_right.nii.gz"] = 7
+    mapping["adrenal_gland_left.nii.gz"] = 7
+    mapping["lung_upper_lobe_left.nii.gz"] = 8
+    mapping["lung_lower_lobe_left.nii.gz"] = 9
+    mapping["lung_upper_lobe_right.nii.gz"] = 8
+    mapping["lung_middle_lobe_right.nii.gz"] = 10
+    mapping["lung_lower_lobe_right.nii.gz"] = 9
+    mapping["esophagus.nii.gz"] = 11
+    mapping["trachea.nii.gz"] = 12
+    mapping["thyroid_gland.nii.gz"] = 13
+    mapping["small_bowel.nii.gz"] = 14
+    mapping["duodenum.nii.gz"] = 15
+    mapping["colon.nii.gz"] = 16
+    mapping["urinary_bladder.nii.gz"] = 17
+    mapping["prostate.nii.gz"] = 18
+    mapping["kidney_cyst_left.nii.gz"] = 19
+    mapping["kidney_cyst_right.nii.gz"] = 19
+    mapping["sacrum.nii.gz"] = 20
+    mapping["vertebrae_S1.nii.gz"] = 21
+    mapping["vertebrae_L5.nii.gz"] = 20
+    mapping["vertebrae_L4.nii.gz"] = 20
+    mapping["vertebrae_L3.nii.gz"] = 20
+    mapping["vertebrae_L2.nii.gz"] = 20
+    mapping["vertebrae_L1.nii.gz"] = 20
+    mapping["vertebrae_T12.nii.gz"] = 22
+    mapping["vertebrae_T11.nii.gz"] = 22
+    mapping["vertebrae_T10.nii.gz"] = 22
+    mapping["vertebrae_T9.nii.gz"] = 22
+    mapping["vertebrae_T8.nii.gz"] = 22
+    mapping["vertebrae_T7.nii.gz"] = 22
+    mapping["vertebrae_T6.nii.gz"] = 22
+    mapping["vertebrae_T5.nii.gz"] = 22
+    mapping["vertebrae_T4.nii.gz"] = 22
+    mapping["vertebrae_T3.nii.gz"] = 22
+    mapping["vertebrae_T2.nii.gz"] = 22
+    mapping["vertebrae_T1.nii.gz"] = 22
+    mapping["vertebrae_C7.nii.gz"] = 23
+    mapping["vertebrae_C6.nii.gz"] = 23
+    mapping["vertebrae_C5.nii.gz"] = 23
+    mapping["vertebrae_C4.nii.gz"] = 23
+    mapping["vertebrae_C3.nii.gz"] = 23
+    mapping["vertebrae_C2.nii.gz"] = 23
+    mapping["vertebrae_C1.nii.gz"] = 23
+    mapping["heart.nii.gz"] = 24
+    mapping["aorta.nii.gz"] = 25
+    mapping["pulmonary_vein.nii.gz"] = 26
+    mapping["brachiocephalic_trunk.nii.gz"] = 27
+    mapping["subclavian_artery_right.nii.gz"] = 28
+    mapping["subclavian_artery_left.nii.gz"] = 29
+    mapping["common_carotid_artery_right.nii.gz"] = 30
+    mapping["common_carotid_artery_left.nii.gz"] = 31
+    mapping["brachiocephalic_vein_left.nii.gz"] = 32
+    mapping["brachiocephalic_vein_right.nii.gz"] = 33
+    mapping["atrial_appendage_left.nii.gz"] = 33
+    mapping["superior_vena_cava.nii.gz"] = 34
+    mapping["inferior_vena_cava.nii.gz"] = 32
+    mapping["portal_vein_and_splenic_vein.nii.gz"] = 32
+    mapping["iliac_artery_left.nii.gz"] = 35
+    mapping["iliac_artery_right.nii.gz"] = 35
+    mapping["iliac_vena_left.nii.gz"] = 32
+    mapping["iliac_vena_right.nii.gz"] = 32
+    mapping["humerus_left.nii.gz"] = 36
+    mapping["humerus_right.nii.gz"] = 36
+    mapping["scapula_left.nii.gz"] = 20
+    mapping["scapula_right.nii.gz"] = 20
+    mapping["clavicula_left.nii.gz"] = 36
+    mapping["clavicula_right.nii.gz"] = 36
+    mapping["femur_left.nii.gz"] = 37
+    mapping["femur_right.nii.gz"] = 37
+    mapping["hip_left.nii.gz"] = 20
+    mapping["hip_right.nii.gz"] = 20
+    mapping["spinal_cord.nii.gz"] = 38
+    mapping["gluteus_maximus_left.nii.gz"] = 39
+    mapping["gluteus_maximus_right.nii.gz"] = 39
+    mapping["gluteus_medius_left.nii.gz"] = 40
+    mapping["gluteus_medius_right.nii.gz"] = 40
+    mapping["gluteus_minimus_left.nii.gz"] = 41
+    mapping["gluteus_minimus_right.nii.gz"] = 41
+    mapping["autochthon_left.nii.gz"] = 42
+    mapping["autochthon_right.nii.gz"] = 42
+    mapping["iliopsoas_left.nii.gz"] = 43
+    mapping["iliopsoas_right.nii.gz"] = 43
+    mapping["brain.nii.gz"] = 44
+    mapping["skull.nii.gz"] = 45
+    mapping["rib_right_4.nii.gz"] = 46
+    mapping["rib_right_3.nii.gz"] = 46
+    mapping["rib_left_1.nii.gz"] = 46
+    mapping["rib_left_2.nii.gz"] = 46
+    mapping["rib_left_3.nii.gz"] = 46
+    mapping["rib_left_4.nii.gz"] = 46
+    mapping["rib_left_5.nii.gz"] = 46
+    mapping["rib_left_6.nii.gz"] = 46
+    mapping["rib_left_7.nii.gz"] = 46
+    mapping["rib_left_8.nii.gz"] = 46
+    mapping["rib_left_9.nii.gz"] = 46
+    mapping["rib_left_10.nii.gz"] = 46
+    mapping["rib_left_11.nii.gz"] = 46
+    mapping["rib_left_12.nii.gz"] = 46
+    mapping["rib_right_1.nii.gz"] = 46
+    mapping["rib_right_2.nii.gz"] = 46
+    mapping["rib_right_5.nii.gz"] = 46
+    mapping["rib_right_6.nii.gz"] = 46
+    mapping["rib_right_7.nii.gz"] = 46
+    mapping["rib_right_8.nii.gz"] = 46
+    mapping["rib_right_9.nii.gz"] = 46
+    mapping["rib_right_10.nii.gz"] = 46
+    mapping["rib_right_11.nii.gz"] = 46
+    mapping["rib_right_12.nii.gz"] = 46
+    mapping["sternum.nii.gz"] = 47
+    mapping["costal_cartilages.nii.gz"] = 48
 
     # prepare variables
     current = 0
@@ -240,6 +292,10 @@ if __name__ == '__main__':
     output = open('output.obj', 'w')
     output.write("mtllib material.mtl\n")
     output.write("usemtl default\n")
+    with open("palette.png", 'wb') as png_file:
+        palette = numpy.reshape(numpy.array(colors), (1, len(colors) * 3))
+        w = png.Writer(len(colors), 1, greyscale=False)
+        w.write(png_file, numpy.uint8(palette))
 
     # run the loop
     for file in list:
@@ -253,10 +309,10 @@ if __name__ == '__main__':
         # append the mesh of the single object into the output
         name = os.path.basename(file)
         if os.path.isfile(temp):
-            color = [1.8, 1.0, 1.0]
-            if name in colors.keys():
-                color = colors[name]
-            rgb = colorsys.hsv_to_rgb(color[0] / 3.6, 1.0, color[2])
+            index = 0
+            if name in mapping.keys():
+                index = mapping[name]
+            color = colors[index]
             output.write("o " + name + "\n")
             with open(temp) as f:
                 for line in re.split("\n", f.read()):
@@ -265,7 +321,7 @@ if __name__ == '__main__':
                     # write vertex coordinates
                     if data[0] == 'v':
                         output.write(line + "\n")
-                        output.write("vt " + str(color[0] / 3.6) + " " + str(color[2] * 0.99 + 0.005) + "\n")
+                        output.write("vt " + str((index + 0.5) / len(colors)) + " 0\n")
                         count += 1
 
                     # write triangle indices
@@ -294,7 +350,7 @@ if __name__ == '__main__':
                         continue
                     frame = numpy.array(Image.open(image).getdata())
                     frame = numpy.reshape(frame, (shape[0], shape[1]))
-                    multiplier = numpy.uint32(numpy.array(rgb) * 255)
+                    multiplier = numpy.uint32(numpy.array(color))
                     for y in range(shape[1]):
                         # TODO: this doesn't seem to be universally correct, test it on more data
                         if orientation == 0:
