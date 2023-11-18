@@ -101,8 +101,8 @@ if __name__ == '__main__':
             ds = pydicom.dcmread(file)
             shape = ds.pixel_array.shape
             image_2d = ds.pixel_array.astype(float)
-            image_2d_scaled = numpy.uint8((numpy.maximum(image_2d,0) / image_2d.max()) * 255.0)
-            image_2d_colored = numpy.zeros([shape[0], shape[1] * 3], dtype=numpy.uint8)
+            image_2d_scaled = numpy.uint32((numpy.maximum(image_2d,0) / image_2d.max()) * 255.0)
+            image_2d_colored = numpy.zeros([shape[0], shape[1] * 3], dtype=numpy.uint32)
             for y in range(shape[1]):
                 image_2d_colored[:, y * 3 + 0] = image_2d_scaled[:, y]
                 image_2d_colored[:, y * 3 + 1] = image_2d_scaled[:, y]
@@ -294,7 +294,7 @@ if __name__ == '__main__':
                         continue
                     frame = numpy.array(Image.open(image).getdata())
                     frame = numpy.reshape(frame, (shape[0], shape[1]))
-                    multiplier = numpy.uint8(numpy.array(rgb) * 255)
+                    multiplier = numpy.uint32(numpy.array(rgb) * 255)
                     for y in range(shape[1]):
                         # TODO: this doesn't seem to be universally correct, test it on more data
                         if orientation == 0:
@@ -312,5 +312,5 @@ if __name__ == '__main__':
         for image in images:
             with open(sys.argv[1] + "/" + str(count) + ".png", 'wb') as png_file:
                 w = png.Writer(shape[1], shape[0], greyscale=False)
-                w.write(png_file, numpy.minimum(image, 255))
+                w.write(png_file, numpy.uint8(numpy.minimum(image, 255)))
                 count += 1
